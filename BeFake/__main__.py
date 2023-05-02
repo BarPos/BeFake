@@ -143,6 +143,8 @@ def feed(bf, feed_id, save_location, realmoji_location, instant_realmoji_locatio
 
         with open(f"{_save_location}/info.json", "w+") as f:
             f.write(json.dumps(item.data_dict, indent=4))
+        with open(f"{_save_location}/bereal-response.json", "w+") as f:
+            f.write(json.dumps(item, indent=4))
         item.primary_photo.download(f"{_save_location}/primary")
         item.secondary_photo.download(f"{_save_location}/secondary")
 

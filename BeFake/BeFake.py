@@ -306,7 +306,7 @@ class BeFake:
         return User(res, self)
 
     def get_friends_feed(self):
-        res = self.api_request("get", "feeds/friends-v1")
+        res = self.api_request("get", "feeds/friends")
         return [Post(p, self) for p in res]
 
     def get_fof_feed(self):  # friends of friends feed
