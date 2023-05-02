@@ -107,6 +107,7 @@ def feed(bf, feed_id, save_location, realmoji_location, instant_realmoji_locatio
 
     if feed_id == "friends":
         feed = bf.get_friends_feed()
+        bf.get_friends_feed_v1()
     elif feed_id == "friends-of-friends":
         feed = bf.get_fof_feed()
     elif feed_id == "discovery":

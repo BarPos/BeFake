@@ -13,6 +13,7 @@ from .models.realmoji_picture import RealmojiPicture
 from .models.post import Post, FOFPost
 from .models.memory import Memory
 from .models.user import User
+from .models.picture import Picture
 
 
 def _get_config_dir() -> str:
@@ -306,8 +307,44 @@ class BeFake:
         return User(res, self)
 
     def get_friends_feed(self):
+        res = self.api_request("get", "feeds/friends")
+        # print(json.dumps(res, indent=4))
+        return (Post(p, self) for p in res)
+
+    def get_friends_feed_v1(self):
         res = self.api_request("get", "feeds/friends-v1")
-        return [Post(p, self) for p in res]
+        # print(json.dumps(res, indent=4))
+
+        users = res["friendsPosts"]
+        for user in users:
+            username = user["user"]["username"]
+            save_location = f"data" + "/feeds/friends/{username}/{post_id}"
+            posts = user["posts"]
+            for p in posts:
+                post_date = p["creationDate"]
+                post_id = p["id"]
+                _save_location = save_location.format(username=username, date=post_date, post_id=post_id)
+
+                os.makedirs(f"{_save_location}", exist_ok=True)
+
+                with open(f"{_save_location}/v2.json", "w+") as f:
+                    f.write(json.dumps(p, indent=4))
+
+                pic_primary = Picture(
+                    {},
+                    p["primary"]["url"],
+                    p["primary"]["width"],
+                    p["primary"]["height"],
+                )
+                pic_secondary = Picture(
+                    {},
+                    p["secondary"]["url"],
+                    p["secondary"]["width"],
+                    p["secondary"]["height"],
+                )
+                print(f"v2: saving post by {username}".ljust(50, " ") + post_id)
+                pic_primary.download(f"{_save_location}/primary-v2")
+                pic_secondary.download(f"{_save_location}/secondary-v2")
 
     def get_fof_feed(self):  # friends of friends feed
         res = self.api_request("get", "feeds/friends-of-friends")
