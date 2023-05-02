@@ -127,6 +127,7 @@ class BeFake:
         )
         res.raise_for_status()
         # TODO: Include error message in exception
+        print(res.json())
         return res.json()
 
     def send_otp_firebase(self, phone: str) -> None:  # iOS Firebase OTP
@@ -305,7 +306,7 @@ class BeFake:
         return User(res, self)
 
     def get_friends_feed(self):
-        res = self.api_request("get", "feeds/friends")
+        res = self.api_request("get", "feeds/friends-v1")
         return [Post(p, self) for p in res]
 
     def get_fof_feed(self):  # friends of friends feed
